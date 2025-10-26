@@ -11,14 +11,34 @@ const statsRoutes = require("./routes/stats");
 const app = express();
 
 app.use(express.json());
+const allowedOrigins = [
+  "https://verdant-buttercream-2294a5.netlify.app",
+  "https://lion-automation-backend.onrender.com"
+];
+
 app.use(cors({
-  origin: [
-    "https://verdant-buttercream-2294a5.netlify.app", // teu domínio Netlify
-    "https://lion-automation-backend.onrender.com"    // teu backend Render
-  ],
+  origin: function (origin, callback) {
+    // permite também chamadas sem origem (ex.: Postman ou testes locais)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS: " + origin), false);
+  },
   methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: false,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
+
+// ⚙️ Resposta manual ao pré-voo (preflight) que o browser faz
+app.options("*", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.status(204).end();
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/leads", leadsRoutes);
@@ -35,4 +55,5 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log("Lion Automation API a correr na porta " + PORT);
 });
+
 
