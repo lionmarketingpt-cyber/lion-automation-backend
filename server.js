@@ -12,7 +12,12 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: "*", // depois podes trocar para o teu domínio Netlify
+  origin: [
+    "https://verdant-buttercream-2294a5.netlify.app", // teu domínio Netlify
+    "https://lion-automation-backend.onrender.com"    // teu backend Render
+  ],
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use("/api/auth", authRoutes);
@@ -30,3 +35,4 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log("Lion Automation API a correr na porta " + PORT);
 });
+
