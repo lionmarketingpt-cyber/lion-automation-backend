@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-100;
+}
+
+a {
+  @apply text-primary hover:text-primary-dark transition;
+}
+
+button {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary/50;
+}
